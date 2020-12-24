@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, request, render_template, make_response, jsonify, redirect, url_for
 from blog_control.user_mgmt import User
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
+import datetime
 
 blog_abtest = Blueprint('blog', __name__)
 
@@ -17,7 +18,8 @@ def set_email():
         #print('set_email', request.get_json())
         print('set_email', request.form['user_email'])
         user = User.create(request.form['user_email'], 'A')
-        login_user(user)  # session/cookie 생성객체
+        login_user(user, remember=True, duration=datetime.timedelta(
+            days=365))  # session/cookie 생성객체
 
         return redirect(url_for('blog.test_blog'))
 
@@ -31,3 +33,10 @@ def test_blog():
         return render_template('blog_A.html', user_email=current_user.user_email)
     else:
         return render_template('blog_A.html')
+
+
+@blog_abtest.route('/logout')
+def logout():
+    User.delete(current_user.id)
+    logout_user()
+    return redirect(url_for('blog.test_blog'))
