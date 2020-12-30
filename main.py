@@ -10,7 +10,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
-app.secret_key = 'admin_server2'
+app.secret_key = 'admin_server'
 
 app.register_blueprint(blog.blog_abtest, url_prefix='/blog')
 login_manager = LoginManager()
